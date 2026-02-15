@@ -12,25 +12,23 @@ namespace HomeworkViews.Services
                 new User {Name = "Анна", Position = "Разработчик", Age = 28, Salary = 3500 }
             };
 
-        public IEnumerable<User> GetUsers()
+        public IEnumerable<User> GetUsers(
+            string? name,
+            string? position,
+            Func<User, object> keySelector, 
+            bool isDescending)          
         {
-            return _users;
-        }
-        public IEnumerable<User> SearchByName(string name)
-        {
-            return _users.Where(u => u.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
-        }
-        public IEnumerable<User> SearchByPosition(string position)
-        {
-            return _users.Where(u => u.Position.Contains(position, StringComparison.OrdinalIgnoreCase));
-        }
-        public IEnumerable<User> SortByAge(bool ascending = true)
-        {
-            return ascending ? _users.OrderBy(u => u.Age) : _users.OrderByDescending(u => u.Age);
-        }
-        public IEnumerable<User> SortBySalary(bool ascending = true)
-        {
-            return ascending ? _users.OrderBy(u => u.Salary) : _users.OrderByDescending(u => u.Salary);
+            var users = _users.AsEnumerable();
+
+            if (!string.IsNullOrEmpty(name))
+                users = users.Where(u => u.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
+
+            if (!string.IsNullOrEmpty(position))
+                users = users.Where(u => u.Position.Contains(position, StringComparison.OrdinalIgnoreCase));
+
+            return isDescending
+                ? users.OrderByDescending(keySelector)
+                : users.OrderBy(keySelector);
         }
 
         public User? GetUser(Guid id)

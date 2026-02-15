@@ -16,7 +16,7 @@ namespace HomeworkViews.Models
 {
     public class User
     {
-        public Guid Id { get; set; } =  new Guid();
+        public Guid Id { get; set; } =  Guid.NewGuid();
         public string Name { get; set; } = string.Empty;
         public string Position { get; set; } = string.Empty;
         public int Age { get; set; } = 0;
